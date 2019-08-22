@@ -108,3 +108,8 @@ logs-*/
 training_data/
 vivos/
 vivos_edited/
+fpt_dataset/
+training_data_LJS/
+tacotron_output/
+wavenet_output/
+LJSpeech-1.1/

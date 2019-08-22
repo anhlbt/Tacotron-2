@@ -36,14 +36,16 @@ def norm_data(args):
 	merge_books = (args.merge_books=='True')
 
 	print('Selecting data folders..')
-	supported_datasets = ['LJSpeech-1.0', 'LJSpeech-1.1', 'M-AILABS']
+	supported_datasets = ['LJSpeech-1.0', 'LJSpeech-1.1', 'M-AILABS', 'vivos_edited']
 	if args.dataset not in supported_datasets:
 		raise ValueError('dataset value entered {} does not belong to supported datasets: {}'.format(
 			args.dataset, supported_datasets))
 
 	if args.dataset.startswith('LJSpeech'):
-		return [os.path.join(args.base_dir, args.dataset)]
+    		return [os.path.join(args.base_dir, args.dataset)]
 
+	if args.dataset == 'vivos_edited':
+    		return [os.path.join(args.base_dir, args.dataset)]
 
 	if args.dataset == 'M-AILABS':
 		supported_languages = ['en_US', 'en_UK', 'fr_FR', 'it_IT', 'de_DE', 'es_ES', 'ru_RU',
@@ -89,14 +91,14 @@ def main():
 	parser.add_argument('--base_dir', default='')
 	parser.add_argument('--hparams', default='',
 		help='Hyperparameter overrides as a comma-separated list of name=value pairs')
-	parser.add_argument('--dataset', default='LJSpeech-1.1')
+	parser.add_argument('--dataset', default='vivos_edited')
 	parser.add_argument('--language', default='en_US')
 	parser.add_argument('--voice', default='female')
 	parser.add_argument('--reader', default='mary_ann')
 	parser.add_argument('--merge_books', default='False')
 	parser.add_argument('--book', default='northandsouth')
 	parser.add_argument('--output', default='training_data')
-	parser.add_argument('--n_jobs', type=int, default=cpu_count())
+	parser.add_argument('--n_jobs', type=int, default=cpu_count()-12)
 	args = parser.parse_args()
 
 	modified_hp = hparams.parse(args.hparams)

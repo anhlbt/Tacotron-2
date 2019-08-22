@@ -9,7 +9,8 @@ from hparams import hparams
 from infolog import log
 from tacotron.synthesize import tacotron_synthesize
 from wavenet_vocoder.synthesize import wavenet_synthesize
-
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 def prepare_run(args):
 	modified_hp = hparams.parse(args.hparams)
@@ -47,7 +48,7 @@ def synthesize(args, hparams, taco_checkpoint, wave_checkpoint, sentences):
 def main():
 	accepted_modes = ['eval', 'synthesis', 'live']
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--checkpoint', default='pretrained/', help='Path to model checkpoint')
+	parser.add_argument('--checkpoint', default='pretrained', help='Path to model checkpoint')
 	parser.add_argument('--hparams', default='',
 		help='Hyperparameter overrides as a comma-separated list of name=value pairs')
 	parser.add_argument('--name', help='Name of logging directory if the two models were trained together.')

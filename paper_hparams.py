@@ -6,6 +6,7 @@ hparams = tf.contrib.training.HParams(
 	# Comma-separated list of cleaners to run on text prior to training and eval. For non-English
 	# text, you may want to use "basic_cleaners" or "transliteration_cleaners".
 	cleaners='english_cleaners',
+	
 
 
 	#If you only have 1 GPU or want to use only one GPU, please set num_gpus=0 and specify the GPU idx on run. example:
@@ -33,7 +34,7 @@ hparams = tf.contrib.training.HParams(
 
 	#Hardware setup: Default supposes user has only one GPU: "/gpu:0" (Tacotron only for now! WaveNet does not support multi GPU yet, WIP)
 	#Synthesis also uses the following hardware parameters for multi-GPU parallel synthesis.
-	tacotron_num_gpus = 1, #Determines the number of gpus in use for Tacotron training.
+	tacotron_num_gpus = 2, #Determines the number of gpus in use for Tacotron training.
 	wavenet_num_gpus = 1, #Determines the number of gpus in use for WaveNet training. (WIP)
 	split_on_cpu = True, #Determines whether to split data on CPU or on first GPU. This is automatically True when more than 1 GPU is used. 
 		#(Recommend: False on slow CPUs/Disks, True otherwise for small speed boost)
@@ -214,7 +215,7 @@ hparams = tf.contrib.training.HParams(
 	#Resize is a 2D convolution that follows a Nearest Neighbor (NN) resize. For reference, this is: "NN resize->convolution".
 	#Finally, SubPixel (2D) is the ICNR version (initialized to be equivalent to "convolution->NN resize") of Sub-Pixel convolutions. also called "checkered artifact free sub-pixel conv".
 	upsample_type = '2D', #Type of the upsampling deconvolution. Can be ('1D' or '2D', 'Resize', 'SubPixel').
-	upsample_activation = 'Relu', #Activation function used during upsampling. Can be ('LeakyRelu', 'Relu' or None)
+	upsample_activation = 'LeakyRelu', #Activation function used during upsampling. Can be ('LeakyRelu', 'Relu' or None)
 	upsample_scales = [5, 5, 11], #prod(upsample_scales) should be equal to hop_size
 	freq_axis_kernel_size = 3, #Only used for 2D upsampling types. This is the number of requency bands that are spanned at a time for each frame.
 	leaky_alpha = 0.4, #slope of the negative portion of LeakyRelu (LeakyRelu: y=x if x>0 else y=alpha * x)
@@ -338,29 +339,31 @@ hparams = tf.contrib.training.HParams(
 	#Eval sentences (if no eval text file was specified during synthesis, these sentences are used for eval)
 	sentences = [
 	# From July 8, 2017 New York Times:
-	'Scientists at the CERN laboratory say they have discovered a new particle.',
-	'There\'s a way to measure the acute emotional intelligence that has never gone out of style.',
-	'President Trump met with other leaders at the Group of 20 conference.',
-	'The Senate\'s bill to repeal and replace the Affordable Care Act is now imperiled.',
+	# 'Scientists at the CERN laboratory say they have discovered a new particle.',
+	# 'There\'s a way to measure the acute emotional intelligence that has never gone out of style.',
+	# 'President Trump met with other leaders at the Group of 20 conference.',
+	# 'The Senate\'s bill to repeal and replace the Affordable Care Act is now imperiled.',
 	# From Google's Tacotron example page:
-	'Generative adversarial network or variational auto-encoder.',
-	'Basilar membrane and otolaryngology are not auto-correlations.',
-	'He has read the whole thing.',
-	'He reads books.',
-	'He thought it was time to present the present.',
-	'Thisss isrealy awhsome.',
-	'Punctuation sensitivity, is working.',
-	'Punctuation sensitivity is working.',
-	"Peter Piper picked a peck of pickled peppers. How many pickled peppers did Peter Piper pick?",
-	"She sells sea-shells on the sea-shore. The shells she sells are sea-shells I'm sure.",
-	"Tajima Airport serves Toyooka.",
+	# 'Generative adversarial network or variational auto-encoder.',
+	# 'Basilar membrane and otolaryngology are not auto-correlations.',
+	# 'He has read the whole thing.',
+	# 'He reads books.',
+	# 'He thought it was time to present the present.',
+	# 'Thisss isrealy awhsome.',
+	# 'Punctuation sensitivity, is working.',
+	# 'Punctuation sensitivity is working.',
+	# "Peter Piper picked a peck of pickled peppers. How many pickled peppers did Peter Piper pick?",
+	# "She sells sea-shells on the sea-shore. The shells she sells are sea-shells I'm sure.",
+	# "Tajima Airport serves Toyooka.",
 	#From The web (random long utterance)
 	# 'On offering to help the blind man, the man who then stole his car, had not, at that precise moment, had any evil intention, quite the contrary, \
 	# what he did was nothing more than obey those feelings of generosity and altruism which, as everyone knows, \
 	# are the two best traits of human nature and to be found in much more hardened criminals than this one, a simple car-thief without any hope of advancing in his profession, \
 	# exploited by the real owners of this enterprise, for it is they who take advantage of the needs of the poor.',
 	# A final Thank you note!
-	'Thank you so much for your support!',
+	# 'Thank you so much for your support!',
+	'Trưởng đặc khu Hong Kong cho biết việc bà và tất cả quan chức chính quyền cam kết lắng nghe thông điệp của người dân là "biểu hiện chân thành của hy vọng được đối thoại với những thành phần khác nhau trong xã hội',
+	'Bà Lam khẳng định sẽ bắt đầu bằng cách tiếp cận với những người từng đưa ra đề xuất đàm phán. Cam kết được bà đưa ra trong họp báo sáng nay, hai ngày sau khi hàng trăm nghìn người biểu tình xuống đường tuần hành ôn hòa cuối tuần trước mà không để xảy ra hành vi bạo lực hay đụng độ với cảnh sát',
 	],
 
 	#Wavenet Debug

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import os
 from time import sleep
@@ -9,9 +10,12 @@ from infolog import log
 from tacotron.synthesize import tacotron_synthesize
 from tacotron.train import tacotron_train
 from wavenet_vocoder.train import wavenet_train
+import datetime
 
 log = infolog.log
 
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1"
 
 def save_seq(file, sequence, input_path):
 	'''Save Tacotron-2 training state to disk. (To skip for future runs)
@@ -35,6 +39,7 @@ def prepare_run(args):
 	modified_hp = hparams.parse(args.hparams)
 	os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args.tf_log_level)
 	run_name = args.name or args.model
+	# log_dir = os.path.join(args.base_dir, 'logs-{}_{}'.format(run_name, args.dataset))
 	log_dir = os.path.join(args.base_dir, 'logs-{}'.format(run_name))
 	os.makedirs(log_dir, exist_ok=True)
 	infolog.init(os.path.join(log_dir, 'Terminal_train_log'), run_name, args.slack_url)
@@ -71,6 +76,7 @@ def train(args, log_dir, hparams):
 		GTA_state = 1
 		save_seq(state_file, [taco_state, GTA_state, wave_state], input_path)
 	else:
+    	# input_path = os.path.join('tacotron_' +args.dataset +'_' + args.output_dir, 'gta', 'map.txt')
 		input_path = os.path.join('tacotron_' + args.output_dir, 'gta', 'map.txt')
 
 	if input_path == '' or input_path is None:
@@ -111,10 +117,11 @@ def main():
 		help='Steps between writing checkpoints')
 	parser.add_argument('--eval_interval', type=int, default=5000,
 		help='Steps between eval on test data')
-	parser.add_argument('--tacotron_train_steps', type=int, default=100000, help='total number of tacotron training steps')
+	parser.add_argument('--tacotron_train_steps', type=int, default=500000, help='total number of tacotron training steps')
 	parser.add_argument('--wavenet_train_steps', type=int, default=500000, help='total number of wavenet training steps')
 	parser.add_argument('--tf_log_level', type=int, default=1, help='Tensorflow C++ log level.')
 	parser.add_argument('--slack_url', default=None, help='slack webhook notification destination link')
+	parser.add_argument('--dataset', default='LJS')
 	args = parser.parse_args()
 
 	accepted_models = ['Tacotron', 'WaveNet', 'Tacotron-2']
@@ -136,3 +143,8 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+'''
+python train.py --input_dir 'training_data_LJS' --tacotron_input 'training_data_LJS/train.txt' \
+	--wavenet_input tacotron_LJS_output/gta/map.txt' 
+'''

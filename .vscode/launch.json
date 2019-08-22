@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+            // "args" : ["--base_dir", "","--hparams", "",
+            //     "--tacotron_input", "training_data/train.txt",
+            //     "--wavenet_input","tacotron_output/gta/map.txt",
+            //     "--model","Tacotron-2",
+            //     "--input_dir","training_data",
+            //     "--output_dir","output",
+            //     "--mode","synthesis",
+            //     "--GTA","True",
+            //     "--restore","True",
+            //     "--summary_interval","250",
+            //     "--embedding_interval","5000",
+            //     "--checkpoint_interval","2500",
+            //     "--eval_interval","5000",
+            //     "--tacotron_train_steps","10000",
+            //     "--wavenet_train_steps","50000",
+            //     "--tf_log_level","1",
+            //     "--slack_url","None",
+            //     "--dataset","vivos_edited",
+            // ]
+        }
+    ]
+}

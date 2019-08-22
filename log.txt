@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "preprocess.py", line 5, in <module>
+    from datasets import preprocessor
+  File "/home/500/anh_lbt/NLP/Tacotron-2/datasets/preprocessor.py", line 75
+    return [item for item in tqdm(res) if item is not None]
+         ^
+SyntaxError: invalid syntax

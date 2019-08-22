@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import os
 import subprocess
@@ -16,7 +17,7 @@ from tacotron.utils import ValueWindow, plot
 from tacotron.utils.text import sequence_to_text
 from tacotron.utils.symbols import symbols
 from tqdm import tqdm
-
+import io
 log = infolog.log
 
 
@@ -159,12 +160,13 @@ def train(log_dir, args, hparams):
 	#Embeddings metadata
 	char_embedding_meta = os.path.join(meta_folder, 'CharacterEmbeddings.tsv')
 	if not os.path.isfile(char_embedding_meta):
-		with open(char_embedding_meta, 'w', encoding='utf-8') as f:
+		with io.open(char_embedding_meta, 'w', encoding='utf-8') as f:
 			for symbol in symbols:
 				if symbol == ' ':
 					symbol = '\\s' #For visual purposes, swap space with \s
 
-				f.write('{}\n'.format(symbol))
+				# f.write('{}\n'.format(symbol))
+				f.write((symbol)+'\n')
 
 	char_embedding_meta = char_embedding_meta.replace(log_dir, '..')
 

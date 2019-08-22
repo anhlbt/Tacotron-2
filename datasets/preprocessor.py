@@ -5,9 +5,9 @@ from functools import partial
 import numpy as np
 from datasets import audio
 from wavenet_vocoder.util import is_mulaw, is_mulaw_quantize, mulaw, mulaw_quantize
+import multiprocessing as mp
 
-
-def build_from_path(hparams, input_dirs, mel_dir, linear_dir, wav_dir, n_jobs=12, tqdm=lambda x: x):
+def build_from_path_1(hparams, input_dirs, mel_dir, linear_dir, wav_dir, n_jobs=12, tqdm=lambda x: x):
 	"""
 	Preprocesses the speech dataset from a gven input path to given output directories
 
@@ -40,6 +40,31 @@ def build_from_path(hparams, input_dirs, mel_dir, linear_dir, wav_dir, n_jobs=12
 				index += 1
 
 	return [future.result() for future in tqdm(futures) if future.result() is not None]
+
+
+def tmp_function(line, hparams, input_dir, mel_dir, linear_dir, wav_dir):
+	try:
+		parts = line.strip().split('|')
+		basename = parts[0]
+		wav_path = os.path.join(input_dir, 'wavs', '{}'.format(basename))
+		text = parts[2]
+		return _process_utterance(mel_dir, linear_dir, wav_dir, basename, wav_path, text, hparams)
+		
+	except Exception as ex:
+		print(ex)
+		print("Error in line: %s" %line)		
+
+def build_from_path(hparams, input_dirs, mel_dir, linear_dir, wav_dir, n_jobs=12, tqdm=lambda x: x):
+	executor = ProcessPoolExecutor(max_workers=n_jobs)
+	futures = []
+	pool = mp.Pool(n_jobs)
+	for input_dir in input_dirs:
+		with open(os.path.join(input_dir, 'metadata.csv'), encoding='utf-8') as f:
+			res = pool.starmap(tmp_function, [(line, hparams, input_dir, mel_dir, linear_dir, wav_dir) for line in f])
+	pool.close()
+
+	return [item for item in tqdm(res) if item is not None]
+
 
 
 def _process_utterance(mel_dir, linear_dir, wav_dir, index, wav_path, text, hparams):
